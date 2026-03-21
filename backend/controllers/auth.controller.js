@@ -149,3 +149,95 @@ exports.merchantLogin = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// ============================================
+// PROFILE ENDPOINTS
+// ============================================
+
+exports.getCustomerProfile = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT user_id, name, email, phone, created_at FROM users WHERE user_id = ?',
+      [req.user.id]
+    );
+    if (rows.length === 0) return res.status(404).json({ message: 'User not found' });
+    res.json({ user: rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.updateCustomerProfile = async (req, res) => {
+  try {
+    const { name, phone, currentPassword, newPassword } = req.body;
+
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({ message: 'Current password is required to set a new password' });
+      }
+      const [rows] = await pool.query('SELECT password FROM users WHERE user_id = ?', [req.user.id]);
+      const match = await bcrypt.compare(currentPassword, rows[0].password);
+      if (!match) return res.status(400).json({ message: 'Current password is incorrect' });
+
+      const hashed = await bcrypt.hash(newPassword, 10);
+      await pool.query('UPDATE users SET name = ?, phone = ?, password = ? WHERE user_id = ?',
+        [name, phone, hashed, req.user.id]);
+    } else {
+      await pool.query('UPDATE users SET name = ?, phone = ? WHERE user_id = ?',
+        [name, phone, req.user.id]);
+    }
+
+    const [updated] = await pool.query(
+      'SELECT user_id, name, email, phone, created_at FROM users WHERE user_id = ?',
+      [req.user.id]
+    );
+    res.json({ message: 'Profile updated', user: updated[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getMerchantProfile = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT merchant_id, business_name, email, category_id, description, rating, status, created_at FROM merchants WHERE merchant_id = ?',
+      [req.user.id]
+    );
+    if (rows.length === 0) return res.status(404).json({ message: 'Merchant not found' });
+    res.json({ merchant: rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.updateMerchantProfile = async (req, res) => {
+  try {
+    const { business_name, description, category_id, currentPassword, newPassword } = req.body;
+
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({ message: 'Current password is required to set a new password' });
+      }
+      const [rows] = await pool.query('SELECT password FROM merchants WHERE merchant_id = ?', [req.user.id]);
+      const match = await bcrypt.compare(currentPassword, rows[0].password);
+      if (!match) return res.status(400).json({ message: 'Current password is incorrect' });
+
+      const hashed = await bcrypt.hash(newPassword, 10);
+      await pool.query(
+        'UPDATE merchants SET business_name = ?, description = ?, category_id = ?, password = ? WHERE merchant_id = ?',
+        [business_name, description, category_id, hashed, req.user.id]);
+    } else {
+      await pool.query(
+        'UPDATE merchants SET business_name = ?, description = ?, category_id = ? WHERE merchant_id = ?',
+        [business_name, description, category_id, req.user.id]);
+    }
+
+    const [updated] = await pool.query(
+      'SELECT merchant_id, business_name, email, category_id, description, rating, status, created_at FROM merchants WHERE merchant_id = ?',
+      [req.user.id]
+    );
+    res.json({ message: 'Profile updated', merchant: updated[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

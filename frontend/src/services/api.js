@@ -1,8 +1,11 @@
 import axios from 'axios';
 
 // Base API configuration
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL ||
+  (process.env.NODE_ENV === 'development' ? 'http://localhost:5000/api' : '/api');
+
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -10,7 +13,7 @@ const API = axios.create({
 
 // Add auth token to requests automatically
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -22,8 +25,8 @@ API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -37,10 +40,14 @@ export const authAPI = {
   // Customer
   userSignup: (data) => API.post('/auth/user/signup', data),
   userLogin: (data) => API.post('/auth/user/login', data),
+  getCustomerProfile: () => API.get('/auth/user/profile'),
+  updateCustomerProfile: (data) => API.put('/auth/user/profile', data),
   
   // Merchant
   merchantSignup: (data) => API.post('/auth/merchant/signup', data),
   merchantLogin: (data) => API.post('/auth/merchant/login', data),
+  getMerchantProfile: () => API.get('/auth/merchant/profile'),
+  updateMerchantProfile: (data) => API.put('/auth/merchant/profile', data),
 };
 
 // ============================================

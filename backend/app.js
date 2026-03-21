@@ -12,7 +12,16 @@ const merchantOrderRoutes = require('./routes/merchant.order.routes');
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(cors(
+  allowedOrigins.length
+    ? { origin: allowedOrigins }
+    : undefined
+));
 app.use(express.json());
 
 // ============================================

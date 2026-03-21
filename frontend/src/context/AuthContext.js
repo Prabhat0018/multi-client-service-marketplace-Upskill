@@ -1,15 +1,36 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 
 const AuthContext = createContext(null);
+
+const SESSION_TIMEOUT = 15 * 60 * 1000; // 15 minutes of inactivity
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const timeoutRef = useRef(null);
+
+  const logout = useCallback(() => {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setUser(null);
+  }, []);
+
+  const resetTimer = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      timeoutRef.current = setTimeout(() => {
+        logout();
+        window.location.href = '/login';
+      }, SESSION_TIMEOUT);
+    }
+  }, [logout]);
 
   useEffect(() => {
     // Check for saved user on mount
-    const savedUser = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
+    const savedUser = sessionStorage.getItem('user');
+    const token = sessionStorage.getItem('token');
     
     if (savedUser && token) {
       setUser(JSON.parse(savedUser));
@@ -17,16 +38,24 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = (userData, token) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-  };
+  // Set up activity listeners for inactivity timeout
+  useEffect(() => {
+    if (!user) return;
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
+    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    events.forEach(event => window.addEventListener(event, resetTimer));
+    resetTimer();
+
+    return () => {
+      events.forEach(event => window.removeEventListener(event, resetTimer));
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [user, resetTimer]);
+
+  const login = (userData, token) => {
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
   };
 
   const value = {

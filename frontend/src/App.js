@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import './styles/App.css';
@@ -6,23 +6,27 @@ import './styles/App.css';
 // Components
 import Navbar from './components/Navbar';
 
-// Pages
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Services from './pages/Services';
-import ServiceDetail from './pages/ServiceDetail';
-import Categories from './pages/Categories';
+// Pages (lazy loaded for faster initial boot)
+const Home = lazy(() => import('./pages/Home'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Services = lazy(() => import('./pages/Services'));
+const ServiceDetail = lazy(() => import('./pages/ServiceDetail'));
+const Categories = lazy(() => import('./pages/Categories'));
 
 // Customer Pages
-import MyOrders from './pages/customer/MyOrders';
-import Checkout from './pages/customer/Checkout';
-import PaymentSuccess from './pages/customer/PaymentSuccess';
+const MyOrders = lazy(() => import('./pages/customer/MyOrders'));
+const Checkout = lazy(() => import('./pages/customer/Checkout'));
+const PaymentSuccess = lazy(() => import('./pages/customer/PaymentSuccess'));
+
+// Profile
+const CustomerProfile = lazy(() => import('./pages/customer/CustomerProfile'));
+const MerchantProfile = lazy(() => import('./pages/merchant/MerchantProfile'));
 
 // Merchant Pages
-import MerchantLayout from './pages/merchant/MerchantLayout';
-import MerchantServices from './pages/merchant/MerchantServices';
-import MerchantOrders from './pages/merchant/MerchantOrders';
+const MerchantLayout = lazy(() => import('./pages/merchant/MerchantLayout'));
+const MerchantServices = lazy(() => import('./pages/merchant/MerchantServices'));
+const MerchantOrders = lazy(() => import('./pages/merchant/MerchantOrders'));
 
 // Protected Route Components
 const ProtectedRoute = ({ children, allowedRole }) => {
@@ -37,6 +41,16 @@ const ProtectedRoute = ({ children, allowedRole }) => {
   }
   
   return children;
+};
+
+const ProfileRedirect = () => {
+  const { role } = useAuth();
+
+  if (role === 'merchant') {
+    return <Navigate to="/merchant/profile" replace />;
+  }
+
+  return <Navigate to="/customer/profile" replace />;
 };
 
 function AppRoutes() {
@@ -76,6 +90,32 @@ function AppRoutes() {
         } 
       />
 
+      {/* Profile Routes */}
+      <Route 
+        path="/customer/profile" 
+        element={
+          <ProtectedRoute allowedRole="customer">
+            <CustomerProfile />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/merchant/profile" 
+        element={
+          <ProtectedRoute allowedRole="merchant">
+            <MerchantProfile />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/profile" 
+        element={
+          <ProtectedRoute>
+            <ProfileRedirect />
+          </ProtectedRoute>
+        } 
+      />
+
       {/* Merchant Routes */}
       <Route 
         path="/merchant" 
@@ -101,7 +141,18 @@ function App() {
     <AuthProvider>
       <Router>
         <Navbar />
-        <AppRoutes />
+        <Suspense
+          fallback={
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-10 w-10 border-4 border-purple-600 border-t-transparent mx-auto mb-3"></div>
+                <p className="text-gray-600">Loading...</p>
+              </div>
+            </div>
+          }
+        >
+          <AppRoutes />
+        </Suspense>
       </Router>
     </AuthProvider>
   );

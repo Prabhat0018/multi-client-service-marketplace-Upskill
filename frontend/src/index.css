@@ -1,10 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   🎨 SERVICEHUB - TASKER-INSPIRED THEME
+   ============================================ */
+
+:root {
+  /* Primary Purple */
+  --color-primary: #7C3AED;
+  --color-primary-dark: #6D28D9;
+  --color-primary-light: #A78BFA;
+  
+  /* Accent Colors */
+  --color-accent-yellow: #FCD34D;
+  --color-accent-pink: #EC4899;
+  --color-accent-teal: #14B8A6;
+  --color-accent-orange: #F97316;
+  
+  /* Neutral Colors */
+  --color-gray-50: #F9FAFB;
+  --color-gray-100: #F3F4F6;
+  --color-gray-200: #E5E7EB;
+  --color-gray-300: #D1D5DB;
+  --color-gray-400: #9CA3AF;
+  --color-gray-500: #6B7280;
+  --color-gray-600: #4B5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1F2937;
+  --color-gray-900: #111827;
+  
+  /* Semantic Colors */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-gray-50);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(124, 58, 237, 0.2);
+  color: var(--color-gray-900);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatOrb {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.03);
+  }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: fadeUp 0.55s ease both;
+  }
+
+  .animate-fade-up-delay-1 {
+    animation: fadeUp 0.55s ease 0.08s both;
+  }
+
+  .animate-fade-up-delay-2 {
+    animation: fadeUp 0.55s ease 0.16s both;
+  }
+
+  .animate-fade-up-delay-3 {
+    animation: fadeUp 0.55s ease 0.24s both;
+  }
+
+  .interactive-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    will-change: transform;
+  }
+
+  .interactive-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(124, 58, 237, 0.14);
+  }
+
+  .hover-glow {
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12), 0 10px 28px rgba(124, 58, 237, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .nav-link-fancy {
+    position: relative;
+  }
+
+  .nav-link-fancy::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #7c3aed, #14b8a6);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+
+  .nav-link-fancy:hover::after {
+    transform: scaleX(1);
+  }
+
+  .float-orb {
+    animation: floatOrb 5.5s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up,
+    .animate-fade-up-delay-1,
+    .animate-fade-up-delay-2,
+    .animate-fade-up-delay-3,
+    .float-orb,
+    .interactive-card,
+    .hover-glow {
+      animation: none;
+      transition: none;
+      transform: none;
+    }
+  }
 }
 
 code {
