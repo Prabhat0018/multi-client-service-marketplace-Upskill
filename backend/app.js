@@ -12,16 +12,25 @@ const merchantOrderRoutes = require('./routes/merchant.order.routes');
 const app = express();
 
 // Middleware
-const allowedOrigins = (process.env.CORS_ORIGIN || '')
+const parsedOrigins = (process.env.CORS_ORIGIN || '')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-app.use(cors(
-  allowedOrigins.length
-    ? { origin: allowedOrigins }
-    : undefined
-));
+const allowedOrigins = parsedOrigins.filter(
+  (origin) => /^https?:\/\//i.test(origin) && !origin.includes('YOUR_EC2_PUBLIC_IP')
+);
+
+const devFallbackOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000'];
+const corsOrigins = allowedOrigins.length ? allowedOrigins : devFallbackOrigins;
+
+app.use(
+  cors({
+    origin: corsOrigins,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  })
+);
 app.use(express.json());
 
 // ============================================

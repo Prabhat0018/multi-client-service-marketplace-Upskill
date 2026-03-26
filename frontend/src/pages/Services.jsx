@@ -137,10 +137,10 @@ const Services = () => {
             </div>
 
             {/* Buttons */}
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="submit"
-                className="hover-glow px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-purple-200"
+                className="hover-glow w-full sm:w-auto px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-purple-200"
               >
                 Search
               </button>
@@ -148,7 +148,7 @@ const Services = () => {
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="hover-glow px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition flex items-center gap-2"
+                  className="hover-glow w-full sm:w-auto px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition flex items-center justify-center gap-2"
                 >
                   <X className="w-4 h-4" />
                   Clear
@@ -159,10 +159,10 @@ const Services = () => {
         </div>
 
         {/* Category Pills */}
-        <div className="animate-fade-up-delay-2 flex flex-wrap gap-2 mb-8">
+        <div className="animate-fade-up-delay-2 flex gap-2 mb-8 overflow-x-auto pb-2">
           <button
             onClick={() => handleCategoryFilter('')}
-            className={`hover-glow px-4 py-2 rounded-full text-sm font-medium transition ${
+            className={`hover-glow shrink-0 px-4 py-2 rounded-full text-sm font-medium transition ${
               !selectedCategory
                 ? 'bg-purple-600 text-white'
                 : 'bg-white border border-gray-200 text-gray-600 hover:border-purple-400 hover:text-purple-600'
@@ -174,7 +174,7 @@ const Services = () => {
             <button
               key={cat.category_id}
               onClick={() => handleCategoryFilter(cat.category_id)}
-              className={`hover-glow px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-2 ${
+              className={`hover-glow shrink-0 px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-2 ${
                 selectedCategory === cat.category_id
                   ? 'bg-purple-600 text-white'
                   : 'bg-white border border-gray-200 text-gray-600 hover:border-purple-400 hover:text-purple-600'
@@ -187,7 +187,7 @@ const Services = () => {
         </div>
 
         {/* Results Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between gap-3 mb-6">
           <p className="text-gray-600">
             {loading ? 'Loading...' : `${services.length} service(s) found`}
           </p>
@@ -300,7 +300,7 @@ const Services = () => {
                 key={service.service_id}
                 className="group block animate-fade-up"
               >
-                <div className="interactive-card bg-white rounded-xl border border-gray-100 p-6 hover:border-purple-200 hover:shadow-md transition-all flex gap-6">
+                <div className="interactive-card bg-white rounded-xl border border-gray-100 p-5 sm:p-6 hover:border-purple-200 hover:shadow-md transition-all flex flex-col sm:flex-row gap-4 sm:gap-6">
                   {/* Icon */}
                   <div className={`w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 ${
                     index % 4 === 0 ? 'bg-purple-100 text-purple-600' :
@@ -313,7 +313,7 @@ const Services = () => {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                       <div>
                         <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-md mb-2">
                           {service.category_name || 'Service'}
@@ -322,14 +322,14 @@ const Services = () => {
                           {service.title}
                         </h3>
                       </div>
-                      <span className="text-2xl font-bold text-purple-600 flex-shrink-0">₹{service.price}</span>
+                      <span className="text-xl sm:text-2xl font-bold text-purple-600 flex-shrink-0">₹{service.price}</span>
                     </div>
 
                     <p className="text-gray-600 text-sm mt-2 line-clamp-2">
                       {service.description}
                     </p>
 
-                    <div className="flex items-center gap-6 mt-4 text-sm text-gray-500">
+                    <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-4 text-sm text-gray-500">
                       <div className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
                         <span>{service.duration} mins</span>

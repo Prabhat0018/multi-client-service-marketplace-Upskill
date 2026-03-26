@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { customerAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -38,6 +38,25 @@ const Checkout = () => {
   });
   const [upiId, setUpiId] = useState('');
   const [selectedBank, setSelectedBank] = useState('');
+
+  const paymentSectionRef = useRef(null);
+  const cardNumberRef = useRef(null);
+  const expiryRef = useRef(null);
+  const cvvRef = useRef(null);
+  const cardNameRef = useRef(null);
+  const upiRef = useRef(null);
+  const bankRef = useRef(null);
+
+  const scrollToElement = (ref, shouldFocus = false) => {
+    if (!ref?.current) return;
+
+    ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    if (shouldFocus && typeof ref.current.focus === 'function') {
+      // Delay focus slightly so the browser finishes smooth scrolling first.
+      setTimeout(() => ref.current?.focus(), 220);
+    }
+  };
 
   const banks = [
     { id: 'sbi', name: 'State Bank of India' },
@@ -89,6 +108,14 @@ const Checkout = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId, isAuthenticated]);
 
+  useEffect(() => {
+    if (location.state?.scrollToPaymentOptions) {
+      setTimeout(() => {
+        scrollToElement(paymentSectionRef);
+      }, 120);
+    }
+  }, [location.state]);
+
   const fetchOrder = async () => {
     try {
       const res = await customerAPI.getOrderById(orderId);
@@ -102,22 +129,27 @@ const Checkout = () => {
 
   const handlePayment = async () => {
     setError('');
+    scrollToElement(paymentSectionRef);
 
     if (paymentMethod === 'card') {
       if (!cardDetails.cardNumber || cardDetails.cardNumber.replace(/\s/g, '').length < 16) {
         setError('Please enter a valid card number');
+        scrollToElement(cardNumberRef, true);
         return;
       }
       if (!cardDetails.expiry || cardDetails.expiry.length < 5) {
         setError('Please enter a valid expiry date');
+        scrollToElement(expiryRef, true);
         return;
       }
       if (!cardDetails.cvv || cardDetails.cvv.length < 3) {
         setError('Please enter a valid CVV');
+        scrollToElement(cvvRef, true);
         return;
       }
       if (!cardDetails.name) {
         setError('Please enter cardholder name');
+        scrollToElement(cardNameRef, true);
         return;
       }
     }
@@ -125,6 +157,7 @@ const Checkout = () => {
     if (paymentMethod === 'upi') {
       if (!upiId || !upiId.includes('@')) {
         setError('Please enter a valid UPI ID (e.g., name@upi)');
+        scrollToElement(upiRef, true);
         return;
       }
     }
@@ -132,6 +165,7 @@ const Checkout = () => {
     if (paymentMethod === 'netbanking') {
       if (!selectedBank) {
         setError('Please select a bank');
+        scrollToElement(bankRef, true);
         return;
       }
     }
@@ -233,7 +267,7 @@ const Checkout = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Payment Form - Left Side */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="interactive-card bg-white rounded-2xl shadow-sm p-6">
+            <div ref={paymentSectionRef} className="interactive-card bg-white rounded-2xl shadow-sm p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Select Payment Method</h2>
               
               {error && (
@@ -279,6 +313,7 @@ const Checkout = () => {
                     <div className="relative">
                       <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
+                        ref={cardNumberRef}
                         type="text"
                         name="cardNumber"
                         placeholder="1234 5678 9012 3456"
@@ -293,6 +328,7 @@ const Checkout = () => {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
                       <input
+                        ref={expiryRef}
                         type="text"
                         name="expiry"
                         placeholder="MM/YY"
@@ -305,6 +341,7 @@ const Checkout = () => {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">CVV</label>
                       <input
+                        ref={cvvRef}
                         type="password"
                         name="cvv"
                         placeholder="•••"
@@ -318,6 +355,7 @@ const Checkout = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Cardholder Name</label>
                     <input
+                      ref={cardNameRef}
                       type="text"
                       name="name"
                       placeholder="Name on card"
@@ -337,6 +375,7 @@ const Checkout = () => {
                     <div className="relative">
                       <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
+                        ref={upiRef}
                         type="text"
                         placeholder="yourname@upi"
                         value={upiId}
@@ -358,6 +397,7 @@ const Checkout = () => {
                   <div className="relative">
                     <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <select 
+                      ref={bankRef}
                       value={selectedBank}
                       onChange={(e) => setSelectedBank(e.target.value)}
                       className="hover-glow w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none bg-white"

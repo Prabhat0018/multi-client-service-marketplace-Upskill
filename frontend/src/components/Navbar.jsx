@@ -98,12 +98,12 @@ const Navbar = () => {
                 <div className="relative">
                 <button 
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="hover-glow flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-50 transition"
+                  className="hover-glow flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-50 transition max-w-[220px]"
                 >
                   <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
                     <User className="w-4 h-4 text-purple-600" />
                   </div>
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium text-gray-700 truncate">
                     {user?.name || user?.business_name || 'User'}
                   </span>
                   <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
@@ -189,6 +189,7 @@ const Navbar = () => {
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition"
+            aria-label="Toggle mobile menu"
           >
             {mobileMenuOpen ? (
               <X className="w-6 h-6 text-gray-600" />
@@ -201,8 +202,8 @@ const Navbar = () => {
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100">
-          <div className="px-4 py-4 space-y-3">
+        <div className="md:hidden bg-white border-t border-gray-100 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div className="px-4 py-4 space-y-3 pb-6">
             <Link 
               to="/categories" 
               onClick={() => setMobileMenuOpen(false)}

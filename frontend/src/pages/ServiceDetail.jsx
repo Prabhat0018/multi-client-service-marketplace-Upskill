@@ -95,7 +95,10 @@ const ServiceDetail = () => {
 
       // Redirect to checkout page with order details
       navigate(`/checkout/${res.data.order.order_id}`, {
-        state: { order: res.data.order }
+        state: {
+          order: res.data.order,
+          scrollToPaymentOptions: true
+        }
       });
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to book service');
@@ -143,7 +146,7 @@ const ServiceDetail = () => {
       {/* Breadcrumb */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-sm overflow-x-auto whitespace-nowrap">
             <Link to="/" className="text-gray-500 hover:text-purple-600 transition">Home</Link>
             <ChevronRight className="w-4 h-4 text-gray-400" />
             <Link to="/services" className="text-gray-500 hover:text-purple-600 transition">Services</Link>
@@ -181,7 +184,7 @@ const ServiceDetail = () => {
                 </h1>
 
                 {/* Quick Stats */}
-                <div className="flex flex-wrap gap-6 mb-6 pb-6 border-b border-gray-100">
+                <div className="flex flex-wrap gap-4 sm:gap-6 mb-6 pb-6 border-b border-gray-100">
                   <div className="flex items-center gap-2">
                     <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
                       <Clock className="w-5 h-5 text-purple-600" />
@@ -249,7 +252,7 @@ const ServiceDetail = () => {
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Service Provider</h3>
                 
-                <div className="flex items-start gap-4">
+                <div className="flex flex-col sm:flex-row items-start gap-4">
                   {/* Avatar */}
                   <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
                     {merchant.business_name?.charAt(0) || 'M'}
@@ -260,7 +263,7 @@ const ServiceDetail = () => {
                     <h4 className="text-lg font-semibold text-gray-900 mb-1">
                       {merchant.business_name}
                     </h4>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-gray-500 mb-3">
                       <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 text-yellow-500 fill-current" />
                         <span>4.8 rating</span>
@@ -316,7 +319,7 @@ const ServiceDetail = () => {
 
           {/* Right Column - Booking Form */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lg:sticky lg:top-24">
               {/* Price Header */}
               <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
                 <div className="flex items-baseline gap-2">
@@ -439,7 +442,7 @@ const ServiceDetail = () => {
 
                 {/* Trust badges */}
                 <div className="mt-6 pt-4 border-t border-gray-100">
-                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                  <div className="flex items-start sm:items-center justify-center gap-2 text-sm text-gray-500 text-center sm:text-left">
                     <Shield className="w-4 h-4 text-green-500" />
                     <span>Secure booking with money-back guarantee</span>
                   </div>

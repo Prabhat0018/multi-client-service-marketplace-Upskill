@@ -60,6 +60,18 @@ body {
   background-color: var(--color-gray-50);
 }
 
+/* Keep media elements inside their containers on narrow screens. */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+#root {
+  overflow-x: clip;
+}
+
 html {
   scroll-behavior: smooth;
 }
