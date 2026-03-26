@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { merchantAPI } from '../services/api';
-import { Menu, X, ChevronDown, User, LogOut, LayoutDashboard, ShoppingBag, Bell } from 'lucide-react';
+import { Menu, X, ChevronDown, User, LogOut, LayoutDashboard, ShoppingBag, Bell, Moon, Sun } from 'lucide-react';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout, isCustomer, isMerchant } = useAuth();
@@ -10,6 +10,14 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window === 'undefined') return false;
+
+    const savedTheme = window.localStorage.getItem('theme');
+    if (savedTheme) return savedTheme === 'dark';
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
   const merchantLoggedIn = isAuthenticated && isMerchant();
 
   useEffect(() => {
@@ -33,6 +41,18 @@ const Navbar = () => {
     const intervalId = setInterval(fetchPendingOrders, 45000);
     return () => clearInterval(intervalId);
   }, [merchantLoggedIn]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (isDarkMode) {
+      root.classList.add('dark');
+      window.localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      window.localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
 
   const handleLogout = () => {
     logout();
@@ -77,6 +97,18 @@ const Navbar = () => {
 
           {/* Right side */}
           <div className="hidden md:flex items-center gap-4">
+            <button
+              onClick={() => setIsDarkMode((prev) => !prev)}
+              className="hover-glow inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              <span className="hidden lg:inline text-sm font-medium">
+                {isDarkMode ? 'Light' : 'Dark'}
+              </span>
+            </button>
+
             {isAuthenticated ? (
               <>
                 {isMerchant() && (
@@ -185,18 +217,32 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition"
-            aria-label="Toggle mobile menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="w-6 h-6 text-gray-600" />
-            ) : (
-              <Menu className="w-6 h-6 text-gray-600" />
-            )}
-          </button>
+          {/* Mobile controls */}
+          <div className="md:hidden flex items-center gap-1">
+            <button
+              onClick={() => setIsDarkMode((prev) => !prev)}
+              className="p-2 rounded-lg hover:bg-gray-100 transition"
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDarkMode ? (
+                <Sun className="w-5 h-5 text-gray-600" />
+              ) : (
+                <Moon className="w-5 h-5 text-gray-600" />
+              )}
+            </button>
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg hover:bg-gray-100 transition"
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6 text-gray-600" />
+              ) : (
+                <Menu className="w-6 h-6 text-gray-600" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 

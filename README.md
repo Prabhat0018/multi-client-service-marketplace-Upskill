@@ -69,6 +69,10 @@ JWT_SECRET=replace-with-long-random-secret
 CORS_ORIGIN=http://localhost:3000
 ```
 
+Local development frontend env template:
+
+- Copy `frontend/.env.development.example` to `frontend/.env.development` if you want to force a custom local API URL.
+
 ### 5. Install dependencies
 
 ```bash
@@ -126,3 +130,12 @@ The frontend calls `http://localhost:5000/api` by default in development.
 - CORS errors: set `CORS_ORIGIN=http://localhost:3000` in `backend/.env`.
 - DB connection errors: verify `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`.
 - Port conflict: change `PORT` in `backend/.env` and restart backend.
+
+## Deployment (No Experience Path)
+
+Use this simple path:
+
+- Frontend: Vercel
+- Backend + MySQL: Railway
+
+Step-by-step guide: see `DEPLOYMENT.md`.

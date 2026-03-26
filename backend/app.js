@@ -12,6 +12,8 @@ const merchantOrderRoutes = require('./routes/merchant.order.routes');
 const app = express();
 
 // Middleware
+const normalizeOrigin = (origin) => origin.replace(/\/+$/, '');
+
 const parsedOrigins = (process.env.CORS_ORIGIN || '')
   .split(',')
   .map((origin) => origin.trim())
@@ -22,11 +24,21 @@ const allowedOrigins = parsedOrigins.filter(
 );
 
 const devFallbackOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000'];
-const corsOrigins = allowedOrigins.length ? allowedOrigins : devFallbackOrigins;
+const corsOrigins = (allowedOrigins.length ? allowedOrigins : devFallbackOrigins).map(normalizeOrigin);
+const corsOriginSet = new Set(corsOrigins);
 
 app.use(
   cors({
-    origin: corsOrigins,
+    origin: (origin, callback) => {
+      // Allow server-to-server requests, curl, and health checks without an Origin header.
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      const normalized = normalizeOrigin(origin);
+      callback(null, corsOriginSet.has(normalized));
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
   })

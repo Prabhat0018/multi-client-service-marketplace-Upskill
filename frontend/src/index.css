@@ -48,6 +48,13 @@
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-full: 9999px;
+
+  /* Midnight Shadows palette */
+  --midnight-900: #1A1A2E;
+  --midnight-800: #16213E;
+  --midnight-700: #0F3460;
+  --midnight-accent: #E94560;
+  --midnight-text: #F9F9F9;
 }
 
 body {
@@ -70,6 +77,115 @@ canvas {
 
 #root {
   overflow-x: clip;
+}
+
+/* ============================================
+   DARK MODE - MIDNIGHT SHADOWS
+   ============================================ */
+html.dark body {
+  background: radial-gradient(circle at 20% 0%, #0f3460 0%, #1a1a2e 45%, #111827 100%);
+  color: var(--midnight-text);
+}
+
+html.dark ::selection {
+  background: rgba(233, 69, 96, 0.35);
+  color: var(--midnight-text);
+}
+
+html.dark .bg-white,
+html.dark .bg-gray-50,
+html.dark .bg-gray-100 {
+  background-color: var(--midnight-800) !important;
+}
+
+html.dark .bg-white\/95 {
+  background-color: rgba(22, 33, 62, 0.92) !important;
+}
+
+html.dark .bg-purple-50,
+html.dark .bg-yellow-50,
+html.dark .bg-red-50,
+html.dark .bg-blue-50,
+html.dark .bg-green-50,
+html.dark .bg-teal-100,
+html.dark .bg-pink-100,
+html.dark .bg-purple-100,
+html.dark .bg-yellow-100,
+html.dark .bg-gray-200 {
+  background-color: #0f3460 !important;
+}
+
+html.dark .bg-gray-900 {
+  background-color: #0f3460 !important;
+}
+
+html.dark .text-gray-900,
+html.dark .text-gray-800,
+html.dark .text-gray-700 {
+  color: var(--midnight-text) !important;
+}
+
+html.dark .text-gray-600,
+html.dark .text-gray-500,
+html.dark .text-gray-400,
+html.dark .text-purple-100,
+html.dark .text-yellow-700,
+html.dark .text-yellow-800,
+html.dark .text-green-600,
+html.dark .text-red-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-purple-600,
+html.dark .text-purple-700,
+html.dark .text-pink-600,
+html.dark .text-teal-600,
+html.dark .text-yellow-600 {
+  color: var(--midnight-accent) !important;
+}
+
+html.dark .border-gray-50,
+html.dark .border-gray-100,
+html.dark .border-gray-200,
+html.dark .border-gray-300,
+html.dark .border-purple-100,
+html.dark .border-yellow-200,
+html.dark .border-red-200,
+html.dark .border-green-200,
+html.dark .border-blue-200 {
+  border-color: rgba(249, 249, 249, 0.16) !important;
+}
+
+html.dark .hover\:bg-gray-50:hover,
+html.dark .hover\:bg-gray-100:hover,
+html.dark .hover\:bg-red-50:hover,
+html.dark .hover\:bg-purple-50:hover {
+  background-color: #0f3460 !important;
+}
+
+html.dark .hover\:text-gray-900:hover,
+html.dark .hover\:text-purple-600:hover {
+  color: #ffffff !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #0f3460 !important;
+  color: var(--midnight-text) !important;
+  border-color: rgba(249, 249, 249, 0.2) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #93a4ba !important;
+}
+
+html.dark .shadow-sm,
+html.dark .shadow-md,
+html.dark .shadow-lg,
+html.dark .shadow-xl {
+  box-shadow: 0 12px 30px rgba(5, 10, 25, 0.45) !important;
 }
 
 html {
