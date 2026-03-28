@@ -5,15 +5,15 @@ import {
   Package, 
   Calendar, 
   Clock, 
-  MapPin, 
+  // MapPin, 
   User, 
   X, 
   CheckCircle, 
-  AlertCircle,
+  // AlertCircle,
   Loader2,
   ShoppingBag,
   ArrowRight,
-  Filter,
+  // Filter,
   Search
 } from 'lucide-react';
 

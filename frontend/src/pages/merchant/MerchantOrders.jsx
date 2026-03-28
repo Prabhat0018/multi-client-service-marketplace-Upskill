@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { merchantAPI } from '../../services/api';
 import {
   Package,
@@ -10,7 +10,7 @@ import {
   Loader2,
   Filter,
   PlayCircle,
-  ArrowRight,
+  // ArrowRight,
   MessageSquare
 } from 'lucide-react';
 
@@ -20,7 +20,7 @@ const MerchantOrders = () => {
   const [statusFilter, setStatusFilter] = useState('');
   const [updatingId, setUpdatingId] = useState(null);
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       const res = await merchantAPI.getOrders(statusFilter);
       setOrders(res.data.orders || []);
@@ -29,11 +29,11 @@ const MerchantOrders = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter]);
 
   useEffect(() => {
     fetchOrders();
-  }, [statusFilter]);
+  }, [fetchOrders]);
 
   const handleStatusUpdate = async (orderId, newStatus) => {
     setUpdatingId(orderId);
