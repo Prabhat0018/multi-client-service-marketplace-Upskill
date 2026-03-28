@@ -97,7 +97,7 @@ const Navbar = () => {
 
           {/* Right side */}
           <div className="hidden md:flex items-center gap-4">
-            <button
+            {/* <button
               onClick={() => setIsDarkMode((prev) => !prev)}
               className="hover-glow inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
               aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -107,7 +107,7 @@ const Navbar = () => {
               <span className="hidden lg:inline text-sm font-medium">
                 {isDarkMode ? 'Light' : 'Dark'}
               </span>
-            </button>
+            </button> */}
 
             {isAuthenticated ? (
               <>
