@@ -40,7 +40,7 @@ const PaymentSuccess = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+    <div className="min-h-screen bg-gray-50">
       {/* Success Animation Header */}
       <div className="pt-16 pb-8 text-center animate-fade-up">
         {/* Animated Success Circle */}
